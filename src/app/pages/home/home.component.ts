@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { VideoModel } from 'src/app/models/video.model';
 
 let apiLoaded = false;
@@ -26,8 +26,7 @@ export class HomeComponent implements OnInit {
       id: 2,
       nombre: 'Video 2',
       descripcion: 'Descripción video 2',
-      url_video:
-        'https://www.youtube.com/watch?v=gAJY80FSFzM&pp=ygUFb3BldGg%3D',
+      url_video: 'https://www.youtube.com/watch?v=mtBlV9Lb_aM',
       cant_likes: 0,
       cant_dislikes: 0,
       created_at: '',
@@ -38,7 +37,7 @@ export class HomeComponent implements OnInit {
       nombre: 'Video 3',
       descripcion: 'Descripción video 3',
       url_video:
-        'https://www.youtube.com/watch?v=gAJY80FSFzM&pp=ygUFb3BldGg%3D',
+        'https://www.youtube.com/watch?v=X6rMnH_5x6I&source_ve_path=Mjg2NTgsMjM4NTE&feature=emb_title',
       cant_likes: 0,
       cant_dislikes: 0,
       created_at: '',
@@ -49,7 +48,7 @@ export class HomeComponent implements OnInit {
       nombre: 'Video 4',
       descripcion: 'Descripción video 4',
       url_video:
-        'https://www.youtube.com/watch?v=gAJY80FSFzM&pp=ygUFb3BldGg%3D',
+        'https://www.youtube.com/watch?v=X6rMnH_5x6I&source_ve_path=Mjg2NTgsMjM4NTE&feature=emb_title',
       cant_likes: 0,
       cant_dislikes: 0,
       created_at: '',
@@ -59,8 +58,7 @@ export class HomeComponent implements OnInit {
       id: 5,
       nombre: 'Video 5',
       descripcion: 'Descripción video 5',
-      url_video:
-        'https://www.youtube.com/watch?v=gAJY80FSFzM&pp=ygUFb3BldGg%3D',
+      url_video: 'https://www.youtube.com/watch?v=iqrMFNMgVS0',
       cant_likes: 0,
       cant_dislikes: 0,
       created_at: '',
@@ -72,7 +70,7 @@ export class HomeComponent implements OnInit {
 
   @Input() videoId: string = 'ENJumhoaW2s';
 
-  constructor(public sanitizer: DomSanitizer) {}
+  constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
     /*
@@ -94,12 +92,28 @@ export class HomeComponent implements OnInit {
         );
         */
 
+        // video.iframeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(video.url_video);
+
+        video.id_video_youtube = this.extractVideoId(video.url_video);
+
+        console.log('video.id_video_youtube: ', video.id_video_youtube);
+
         video.iframeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-          'https://www.youtube.com/embed/ENJumhoaW2s?showinfo=0&enablejsapi=1&origin=http://127.0.0.1:4201'
+          'https://www.youtube.com/embed/' + video.id_video_youtube
         );
 
-        console.log("video.iframeUrl: ", video.iframeUrl);
+        console.log('video.iframeUrl: ', video.iframeUrl);
       }
     });
+  }
+
+  extractVideoId(url: string): string {
+    // Extraer el ID del video de la URL
+    const videoIdMatch = url.match(
+      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
+
+    // videoIdMatch[1] contendrá el ID del video si la regex coincide
+    return videoIdMatch ? videoIdMatch[1] : '';
   }
 }

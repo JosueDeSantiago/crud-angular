@@ -6,6 +6,7 @@ export interface VideoModel {
   nombre: string;
   descripcion: string;
   url_video: string;
+  id_video_youtube?: string;
   iframeUrl?: SafeResourceUrl;
   cant_likes: number;
   cant_dislikes: number;

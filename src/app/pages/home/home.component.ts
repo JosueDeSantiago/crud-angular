@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { VideoModel } from 'src/app/models/video.model';
+import { VideoServiceService } from 'src/app/services/video-service.service';
 
 let apiLoaded = false;
 
@@ -10,6 +11,7 @@ let apiLoaded = false;
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
+  /*
   videos: VideoModel[] = [
     {
       id: 1,
@@ -66,13 +68,22 @@ export class HomeComponent implements OnInit {
     },
   ];
 
+  */
+
+  videos: VideoModel[] = [];
+
   // private apiLoaded = false;
 
   @Input() videoId: string = 'ENJumhoaW2s';
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(
+    private sanitizer: DomSanitizer,
+    private videoServiceService: VideoServiceService
+  ) {
+    this.videos = [];
+  }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     /*
     if (!apiLoaded) {
       // This code loads the IFrame Player API code asynchronously, according to the instructions at
@@ -84,27 +95,34 @@ export class HomeComponent implements OnInit {
     }
     */
 
-    this.videos.forEach((video) => {
-      if (video.url_video) {
-        /*
-        video.iframeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-          'https://www.youtube.com/embed/ENJumhoaW2s?showinfo=0&enablejsapi=1&origin=http://127.0.0.1:4201'
-        );
-        */
+    try {
+      const videos = await this.videoServiceService.getVideos().toPromise();
+      this.videos = videos ? videos : [];
 
-        // video.iframeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(video.url_video);
+      this.videos.forEach((video) => {
+        if (video.url_video) {
+          /*
+          video.iframeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+            'https://www.youtube.com/embed/ENJumhoaW2s?showinfo=0&enablejsapi=1&origin=http://127.0.0.1:4201'
+          );
+          */
 
-        video.id_video_youtube = this.extractVideoId(video.url_video);
+          // video.iframeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(video.url_video);
 
-        console.log('video.id_video_youtube: ', video.id_video_youtube);
+          video.id_video_youtube = this.extractVideoId(video.url_video);
 
-        video.iframeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
-          'https://www.youtube.com/embed/' + video.id_video_youtube
-        );
+          console.log('video.id_video_youtube: ', video.id_video_youtube);
 
-        console.log('video.iframeUrl: ', video.iframeUrl);
-      }
-    });
+          video.iframeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
+            'https://www.youtube.com/embed/' + video.id_video_youtube
+          );
+
+          console.log('video.iframeUrl: ', video.iframeUrl);
+        }
+      });
+    } catch (error) {
+      console.error('Error al obtener videos:', error);
+    }
   }
 
   extractVideoId(url: string): string {

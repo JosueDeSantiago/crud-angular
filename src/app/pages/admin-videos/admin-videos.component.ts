@@ -1,18 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { VideoModel } from 'src/app/models/video.model';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { VideoServiceService } from 'src/app/services/video-service.service';
 
 @Component({
   selector: 'app-admin-videos',
   templateUrl: './admin-videos.component.html',
   styleUrls: ['./admin-videos.component.css'],
 })
-export class AdminVideosComponent {
+export class AdminVideosComponent implements OnInit {
   closeResult = '';
 
   isEditing = false;
 
+  /*
   videos: VideoModel[] = [
     {
       id: 1,
@@ -37,19 +39,34 @@ export class AdminVideosComponent {
       comentarios: [],
     },
   ];
+  */
+
+  videos: VideoModel[] = [];
 
   public formularioVideo!: FormGroup;
 
   constructor(
     private modalService: NgbModal,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private videoServiceService: VideoServiceService
   ) {
     this.formularioVideo = this.formBuilder.group({
       id: [0, Validators.required],
       nombre: ['', Validators.required],
       descripcion: ['', [Validators.required]],
       url_video: ['', [Validators.required]],
+      cant_likes: [0, [Validators.required]],
+      cant_dislikes: [0, [Validators.required]],
     });
+  }
+
+  async ngOnInit(): Promise<void> {
+    try {
+      const videos = await this.videoServiceService.getVideos().toPromise();
+      this.videos = videos ? videos : [];
+    } catch (error) {
+      console.error('Error al obtener videos:', error);
+    }
   }
 
   open(content: any, videoEdit: VideoModel | null = null) {
@@ -59,12 +76,31 @@ export class AdminVideosComponent {
       this.formularioVideo.get('nombre')!.setValue(videoEdit.nombre);
       this.formularioVideo.get('descripcion')!.setValue(videoEdit.descripcion);
       this.formularioVideo.get('url_video')!.setValue(videoEdit.url_video);
+
+      this.formularioVideo.get('cant_likes')!.setValue(videoEdit.cant_likes);
+      this.formularioVideo
+        .get('cant_dislikes')!
+        .setValue(videoEdit.cant_dislikes);
     } else {
       this.isEditing = false;
-      this.formularioVideo.get('id')!.setValue(this.videos.length + 1);
+
+      let idNuevoVideo = 0;
+
+      // Encontrar el id más grande
+      const maxId = this.videos.reduce(
+        (max, video) => (video.id > max ? video.id : max),
+        0
+      );
+
+      idNuevoVideo = maxId ? maxId + 1 : 1;
+
+      this.formularioVideo.get('id')!.setValue(idNuevoVideo);
       this.formularioVideo.get('nombre')!.setValue('');
       this.formularioVideo.get('descripcion')!.setValue('');
       this.formularioVideo.get('url_video')!.setValue('');
+
+      this.formularioVideo.get('cant_likes')!.setValue(0);
+      this.formularioVideo.get('cant_dislikes')!.setValue(0);
     }
 
     this.modalService
@@ -90,7 +126,7 @@ export class AdminVideosComponent {
     }
   }
 
-  submitForm() {
+  async submitForm(): Promise<void> {
     console.log('this.formularioVideo: ', this.formularioVideo);
     if (this.formularioVideo.valid) {
       // Lógica de envío del formulario
@@ -99,6 +135,7 @@ export class AdminVideosComponent {
         this.formularioVideo.value
       );
 
+      /*
       if (this.isEditing) {
         let objIndex = this.videos.findIndex(
           (videoEdit) => videoEdit.id == this.formularioVideo.value.id
@@ -109,6 +146,23 @@ export class AdminVideosComponent {
         this.videos[objIndex].url_video = this.formularioVideo.value.url_video;
       } else {
         this.videos.push(this.formularioVideo.value);
+      }
+      */
+
+      try {
+        if (this.isEditing) {
+          await this.videoServiceService
+            .updateVideo(this.formularioVideo.value)
+            .toPromise();
+        } else {
+          await this.videoServiceService
+            .createVideo(this.formularioVideo.value)
+            .toPromise();
+        }
+        const videos = await this.videoServiceService.getVideos().toPromise();
+        this.videos = videos ? videos : [];
+      } catch (error) {
+        console.error('Error al obtener videos:', error);
       }
 
       this.modalService.dismissAll('');

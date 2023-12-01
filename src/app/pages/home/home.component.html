@@ -66,9 +66,11 @@
               </p>
             </mat-card-content>
             <mat-card-actions>
-              <button mat-button>Me gusta</button>
-              <button mat-button>No me gusta</button>
+              <button mat-button (click)="this.likeAction('LIKE', video)">Me gusta</button>
+              <button mat-button (click)="this.likeAction('DISLIKE', video)">No me gusta</button>
+              <!--
               <button mat-button>Ver comentarios</button>
+              -->
             </mat-card-actions>
           </mat-card>
         </div>

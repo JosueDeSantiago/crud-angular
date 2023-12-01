@@ -134,4 +134,30 @@ export class HomeComponent implements OnInit {
     // videoIdMatch[1] contendrá el ID del video si la regex coincide
     return videoIdMatch ? videoIdMatch[1] : '';
   }
+
+  async likeAction(accion: string, video: VideoModel): Promise<void> {
+    let videoAModificar = { ...video }; // Copia de los valores
+    // Lógica de like o dislike
+    console.log('videoAModificar:', videoAModificar);
+
+    try {
+      if (accion == 'LIKE') {
+        videoAModificar.cant_likes = videoAModificar.cant_likes + 1;
+      } else {
+        videoAModificar.cant_dislikes = videoAModificar.cant_dislikes + 1;
+      }
+
+      console.log('Cambios en videoAModificar:', videoAModificar);
+
+      let videoUpdated  = await this.videoServiceService.updateVideo(videoAModificar).toPromise();
+
+
+      // *TODO: en el arreglo de videos reemplazar el el video modificado en el array, para visualizar el like o dislike
+
+      // const videos = await this.videoServiceService.getVideos().toPromise();
+      // this.videos = videos ? videos : [];
+    } catch (error) {
+      console.error('Error al guardar el ' + accion + ': ', error);
+    }
+  }
 }

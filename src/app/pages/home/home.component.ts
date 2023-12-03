@@ -12,7 +12,6 @@ let apiLoaded = false;
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-
   videos: VideoModel[] = [
     {
       id: 1,
@@ -69,7 +68,6 @@ export class HomeComponent implements OnInit {
     },
   ];
 
-
   // videos: VideoModel[] = [];
 
   // private apiLoaded = false;
@@ -79,7 +77,7 @@ export class HomeComponent implements OnInit {
   constructor(
     private sanitizer: DomSanitizer,
     private videoServiceService: VideoServiceService,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {
     // this.videos = [];
   }
@@ -150,16 +148,29 @@ export class HomeComponent implements OnInit {
 
       console.log('Cambios en videoAModificar:', videoAModificar);
 
-      let videoUpdated  = await this.videoServiceService.updateVideo(videoAModificar).toPromise();
-
+      let videoUpdated = await this.videoServiceService
+        .updateVideo(videoAModificar)
+        .toPromise();
 
       if (accion == 'LIKE') {
-        this.toastr.success('Felicidades', 'Se ha guardado el like correctamente');
+        this.toastr.success(
+          'Felicidades',
+          'Se ha guardado el like correctamente'
+        );
       } else {
-        this.toastr.success('Felicidades', 'Se ha guardado el dislike correctamente');
+        this.toastr.success(
+          'Felicidades',
+          'Se ha guardado el dislike correctamente'
+        );
       }
-      
-      // *TODO: en el arreglo de videos reemplazar el el video modificado en el array, para visualizar el like o dislike
+
+      // En el arreglo de videos reemplazar el el video modificado en el array, para visualizar el like o dislike
+      if (videoUpdated && videoUpdated.length >= 1) {
+        const i = this.videos.findIndex(
+          (videoModificado) => videoModificado.id === videoAModificar.id
+        );
+        this.videos[i] = videoUpdated[0];
+      }
 
       // const videos = await this.videoServiceService.getVideos().toPromise();
       // this.videos = videos ? videos : [];

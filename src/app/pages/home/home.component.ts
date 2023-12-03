@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ToastrService } from 'ngx-toastr';
 import { VideoModel } from 'src/app/models/video.model';
 import { VideoServiceService } from 'src/app/services/video-service.service';
 
@@ -11,7 +12,7 @@ let apiLoaded = false;
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  /*
+
   videos: VideoModel[] = [
     {
       id: 1,
@@ -68,9 +69,8 @@ export class HomeComponent implements OnInit {
     },
   ];
 
-  */
 
-  videos: VideoModel[] = [];
+  // videos: VideoModel[] = [];
 
   // private apiLoaded = false;
 
@@ -78,9 +78,10 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private sanitizer: DomSanitizer,
-    private videoServiceService: VideoServiceService
+    private videoServiceService: VideoServiceService,
+    private toastr: ToastrService,
   ) {
-    this.videos = [];
+    // this.videos = [];
   }
 
   async ngOnInit(): Promise<void> {
@@ -96,8 +97,8 @@ export class HomeComponent implements OnInit {
     */
 
     try {
-      const videos = await this.videoServiceService.getVideos().toPromise();
-      this.videos = videos ? videos : [];
+      // const videos = await this.videoServiceService.getVideos().toPromise();
+      // this.videos = videos ? videos : [];
 
       this.videos.forEach((video) => {
         if (video.url_video) {
@@ -152,12 +153,19 @@ export class HomeComponent implements OnInit {
       let videoUpdated  = await this.videoServiceService.updateVideo(videoAModificar).toPromise();
 
 
+      if (accion == 'LIKE') {
+        this.toastr.success('Felicidades', 'Se ha guardado el like correctamente');
+      } else {
+        this.toastr.success('Felicidades', 'Se ha guardado el dislike correctamente');
+      }
+      
       // *TODO: en el arreglo de videos reemplazar el el video modificado en el array, para visualizar el like o dislike
 
       // const videos = await this.videoServiceService.getVideos().toPromise();
       // this.videos = videos ? videos : [];
     } catch (error) {
       console.error('Error al guardar el ' + accion + ': ', error);
+      this.toastr.error('Error', 'Ha ocurrido un error!');
     }
   }
 }

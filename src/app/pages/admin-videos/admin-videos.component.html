@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col col-12">
-      <button mat-raised-button color="primary" (click)="this.open(content)">
+      <button type="button" class="btn btn-secondary" (click)="this.open(content)">
         Nuevo video
       </button>
     </div>
@@ -37,6 +37,7 @@
             </td>
             <td>
               <mat-icon
+                (click)="this.onDelete(video)"
                 style="cursor: pointer"
                 aria-hidden="false"
                 aria-label="Delete icon"
@@ -118,8 +119,7 @@
 
           <div class="col col-12">
             <button
-              mat-raised-button
-              color="primary"
+              type="button" class="btn btn-success"
               (click)="this.submitForm()"
             >
               {{ this.isEditing ? "Guardar cambios" : "Crear" }}

@@ -10,6 +10,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+// import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [MainLayoutComponent, HomeComponent],
@@ -25,6 +27,10 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
+    MatButtonModule,
+
+    // ToastrModule.forRoot(), // ToastrModule added
+
   ],
 })
 export class PagesModule {}

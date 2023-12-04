@@ -3,6 +3,7 @@ import { VideoModel } from 'src/app/models/video.model';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { VideoServiceService } from 'src/app/services/video-service.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-admin-videos',
@@ -48,7 +49,8 @@ export class AdminVideosComponent implements OnInit {
   constructor(
     private modalService: NgbModal,
     private formBuilder: FormBuilder,
-    private videoServiceService: VideoServiceService
+    private videoServiceService: VideoServiceService,
+    private toastr: ToastrService,
   ) {
     this.formularioVideo = this.formBuilder.group({
       id: [0, Validators.required],
@@ -154,21 +156,25 @@ export class AdminVideosComponent implements OnInit {
           await this.videoServiceService
             .updateVideo(this.formularioVideo.value)
             .toPromise();
+          this.toastr.success('Felicidades', 'Se han guardado los cambios');
         } else {
           await this.videoServiceService
             .createVideo(this.formularioVideo.value)
             .toPromise();
+          this.toastr.success('Felicidades', 'Se ha guardado el nuevo video');
         }
         const videos = await this.videoServiceService.getVideos().toPromise();
         this.videos = videos ? videos : [];
       } catch (error) {
         console.error('Error al obtener videos:', error);
+        this.toastr.error('Error', 'Ha ocurrido un error');
       }
 
       this.modalService.dismissAll('');
     } else {
       // Mostrar mensajes de error si el formulario no es válido
       console.log('Formulario inválido. Revise los campos.');
+      this.toastr.warning('Formulario inválido', 'Por favor, completa todos los campos');
     }
   }
 
@@ -182,5 +188,10 @@ export class AdminVideosComponent implements OnInit {
 
   get urlVideoControl() {
     return this.formularioVideo.get('url_video');
+  }
+
+
+  async onDelete(video: VideoModel): Promise<void> {
+
   }
 }

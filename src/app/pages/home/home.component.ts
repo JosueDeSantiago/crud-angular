@@ -4,7 +4,10 @@ import { ToastrService } from 'ngx-toastr';
 import { VideoModel } from 'src/app/models/video.model';
 import { VideoServiceService } from 'src/app/services/video-service.service';
 
+import { environment } from 'src/environments/environment.development';
+
 let apiLoaded = false;
+const USE_API_BACKEND = environment.USE_API_BACKEND;
 
 @Component({
   selector: 'app-home',
@@ -79,7 +82,9 @@ export class HomeComponent implements OnInit {
     private videoServiceService: VideoServiceService,
     private toastr: ToastrService
   ) {
-    // this.videos = [];
+    if (USE_API_BACKEND) {
+      this.videos = [];
+    }
   }
 
   async ngOnInit(): Promise<void> {
@@ -95,8 +100,10 @@ export class HomeComponent implements OnInit {
     */
 
     try {
-      // const videos = await this.videoServiceService.getVideos().toPromise();
-      // this.videos = videos ? videos : [];
+      if (USE_API_BACKEND) {
+        const videos = await this.videoServiceService.getVideos().toPromise();
+        this.videos = videos ? videos : [];
+      }
 
       this.videos.forEach((video) => {
         if (video.url_video) {
@@ -164,14 +171,20 @@ export class HomeComponent implements OnInit {
         );
       }
 
-      // En el arreglo de videos reemplazar el el video modificado en el array, para visualizar el like o dislike
-      if (videoUpdated && videoUpdated.length >= 1) {
+      if (USE_API_BACKEND) {
+        // En el arreglo de videos reemplazar el el video modificado en el array, para visualizar el like o dislike
+        if (videoUpdated && videoUpdated.length >= 1) {
+          const i = this.videos.findIndex(
+            (videoModificado) => videoModificado.id === videoAModificar.id
+          );
+          this.videos[i] = videoUpdated[0];
+        }
+      } else {
         const i = this.videos.findIndex(
           (videoModificado) => videoModificado.id === videoAModificar.id
         );
-        this.videos[i] = videoUpdated[0];
+        this.videos[i] = videoAModificar;
       }
-
       // const videos = await this.videoServiceService.getVideos().toPromise();
       // this.videos = videos ? videos : [];
     } catch (error) {

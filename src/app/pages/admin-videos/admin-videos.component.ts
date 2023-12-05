@@ -4,6 +4,9 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { VideoServiceService } from 'src/app/services/video-service.service';
 import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment.development';
+
+const USE_API_BACKEND = environment.USE_API_BACKEND;
 
 @Component({
   selector: 'app-admin-videos',
@@ -15,7 +18,6 @@ export class AdminVideosComponent implements OnInit {
 
   isEditing = false;
 
-  /*
   videos: VideoModel[] = [
     {
       id: 1,
@@ -40,9 +42,8 @@ export class AdminVideosComponent implements OnInit {
       comentarios: [],
     },
   ];
-  */
 
-  videos: VideoModel[] = [];
+  // videos: VideoModel[] = [];
 
   public formularioVideo!: FormGroup;
 
@@ -50,7 +51,7 @@ export class AdminVideosComponent implements OnInit {
     private modalService: NgbModal,
     private formBuilder: FormBuilder,
     private videoServiceService: VideoServiceService,
-    private toastr: ToastrService,
+    private toastr: ToastrService
   ) {
     this.formularioVideo = this.formBuilder.group({
       id: [0, Validators.required],
@@ -60,12 +61,18 @@ export class AdminVideosComponent implements OnInit {
       cant_likes: [0, [Validators.required]],
       cant_dislikes: [0, [Validators.required]],
     });
+
+    if (USE_API_BACKEND) {
+      this.videos = [];
+    }
   }
 
   async ngOnInit(): Promise<void> {
     try {
-      const videos = await this.videoServiceService.getVideos().toPromise();
-      this.videos = videos ? videos : [];
+      if (USE_API_BACKEND) {
+        const videos = await this.videoServiceService.getVideos().toPromise();
+        this.videos = videos ? videos : [];
+      }
     } catch (error) {
       console.error('Error al obtener videos:', error);
     }
@@ -137,44 +144,48 @@ export class AdminVideosComponent implements OnInit {
         this.formularioVideo.value
       );
 
-      /*
-      if (this.isEditing) {
-        let objIndex = this.videos.findIndex(
-          (videoEdit) => videoEdit.id == this.formularioVideo.value.id
-        );
-        this.videos[objIndex].nombre = this.formularioVideo.value.nombre;
-        this.videos[objIndex].descripcion =
-          this.formularioVideo.value.descripcion;
-        this.videos[objIndex].url_video = this.formularioVideo.value.url_video;
-      } else {
-        this.videos.push(this.formularioVideo.value);
-      }
-      */
-
-      try {
-        if (this.isEditing) {
-          await this.videoServiceService
-            .updateVideo(this.formularioVideo.value)
-            .toPromise();
-          this.toastr.success('Felicidades', 'Se han guardado los cambios');
-        } else {
-          await this.videoServiceService
-            .createVideo(this.formularioVideo.value)
-            .toPromise();
-          this.toastr.success('Felicidades', 'Se ha guardado el nuevo video');
+      if (USE_API_BACKEND) {
+        try {
+          if (this.isEditing) {
+            await this.videoServiceService
+              .updateVideo(this.formularioVideo.value)
+              .toPromise();
+            this.toastr.success('Felicidades', 'Se han guardado los cambios');
+          } else {
+            await this.videoServiceService
+              .createVideo(this.formularioVideo.value)
+              .toPromise();
+            this.toastr.success('Felicidades', 'Se ha guardado el nuevo video');
+          }
+          const videos = await this.videoServiceService.getVideos().toPromise();
+          this.videos = videos ? videos : [];
+        } catch (error) {
+          console.error('Error al obtener videos:', error);
+          this.toastr.error('Error', 'Ha ocurrido un error');
         }
-        const videos = await this.videoServiceService.getVideos().toPromise();
-        this.videos = videos ? videos : [];
-      } catch (error) {
-        console.error('Error al obtener videos:', error);
-        this.toastr.error('Error', 'Ha ocurrido un error');
+      } else {
+        if (this.isEditing) {
+          let objIndex = this.videos.findIndex(
+            (videoEdit) => videoEdit.id == this.formularioVideo.value.id
+          );
+          this.videos[objIndex].nombre = this.formularioVideo.value.nombre;
+          this.videos[objIndex].descripcion =
+            this.formularioVideo.value.descripcion;
+          this.videos[objIndex].url_video =
+            this.formularioVideo.value.url_video;
+        } else {
+          this.videos.push(this.formularioVideo.value);
+        }
       }
 
       this.modalService.dismissAll('');
     } else {
       // Mostrar mensajes de error si el formulario no es válido
       console.log('Formulario inválido. Revise los campos.');
-      this.toastr.warning('Formulario inválido', 'Por favor, completa todos los campos');
+      this.toastr.warning(
+        'Formulario inválido',
+        'Por favor, completa todos los campos'
+      );
     }
   }
 
@@ -190,8 +201,5 @@ export class AdminVideosComponent implements OnInit {
     return this.formularioVideo.get('url_video');
   }
 
-
-  async onDelete(video: VideoModel): Promise<void> {
-
-  }
+  async onDelete(video: VideoModel): Promise<void> {}
 }

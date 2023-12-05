@@ -69,10 +69,10 @@
             </mat-card-content>
             <mat-card-actions>
               <div>
-                <button type="button" class="btn btn-outline-primary" (click)="this.likeAction('LIKE', video)">Me gusta ({{video.cant_likes}} likes)</button>
+                <button type="button" class="btn btn-outline-primary" (click)="this.likeAction('LIKE', video)">Me gusta ({{video.cant_likes}} likes)<img src="assets/pulgar-arriba.png" width="50px"></button>
               </div>
               <div>
-                <button type="button" class="btn btn-outline-danger" (click)="this.likeAction('DISLIKE', video)">No me gusta ({{video.cant_dislikes}} dislikes)</button>
+                <button type="button" class="btn btn-outline-danger" (click)="this.likeAction('DISLIKE', video)">No me gusta ({{video.cant_dislikes}} dislikes)<img src="assets/disgusto.png" width="50px"></button>
               </div>
               <!--
               <button mat-button>Ver comentarios</button>

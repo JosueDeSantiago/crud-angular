@@ -25,3 +25,7 @@
   min-height: calc(100vh - 80px - 60px);
   background: rgb(0, 0, 0, 0.05);
 }
+section {
+  background-image: linear-gradient(to left,rgba(117, 117, 218, 0.425),rgb(91, 95, 110));
+  height: 174vh;
+}

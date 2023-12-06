@@ -1,0 +1,86 @@
+<div id="player"></div>
+
+<div class="containter">
+  <div class="row">
+    <div class="col col-12">
+      <div class="videos_container">
+        <div *ngFor="let video of this.videos" style="margin: 2rem">
+          <mat-card class="example-card">
+            <mat-card-header>
+              <!--
+              <div mat-card-avatar class="example-header-image"></div>
+              -->
+              <mat-card-title
+                >{{ video.id }} - {{ video.nombre }}</mat-card-title
+              >
+              <!--<mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
+            </mat-card-header>
+
+            <!-- 
+            <youtube-player [videoId]="video.id_video_youtube"></youtube-player>
+            -->
+            <!--
+            <iframe
+              id="player"
+              type="text/html"
+              width="100%"
+              height="150"
+              [loading]="'lazy'"
+              [src]="video.iframeUrl"
+              frameborder="0"
+            ></iframe>
+            -->
+
+            <iframe
+              width="100%"
+              height="150"
+              [src]="video.iframeUrl"
+              frameborder="0"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              referrerpolicy="no-referrer"
+            ></iframe>
+
+            <!--
+            <iframe id="player" type="text/html" width="640" height="360"
+            src="http://www.youtube.com/embed/suG-c_i2fBQ?enablejsapi=1&origin=http://example.com"
+            frameborder="0"></iframe>-->
+            <!--
+            <ng-container *ngIf="videos[0].iframeUrl">
+              <iframe loading="lazy" width="560" height="315" [src]="videos[0].iframeUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </ng-container>
+            -->
+            <!--
+              <iframe width="1366" height="514" [src]="'https://www.youtube.com/embed/suG-c_i2fBQ'" title="Gojira - Born In Winter [OFFICIAL VIDEO]" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;" allowfullscreen></iframe>-->
+            <!--
+            <iframe width="1366" height="514" [src]="videos[0].iframeUrl" title="SLIPKNOT - Live at Resurrection Fest EG 2023 (Full Show)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            -->
+            <!--
+            <img
+              mat-card-image
+              src="https://material.angular.io/assets/img/examples/shiba2.jpg"
+              alt="Photo of a Shiba Inu"
+            />
+            -->
+            <mat-card-content>
+              <p>
+                {{ video.descripcion }}
+              </p>
+            </mat-card-content>
+            <mat-card-actions>
+              <div>
+                <button type="button" class="btn btn-outline-primary" (click)="this.likeAction('LIKE', video)">Me gusta ({{video.cant_likes}} likes)<img src="assets/pulgar-arriba.png" width="50px"></button>
+              </div>
+              <div>
+                <button type="button" class="btn btn-outline-danger" (click)="this.likeAction('DISLIKE', video)">No me gusta ({{video.cant_dislikes}} dislikes)<img src="assets/disgusto.png" width="50px"></button>
+              </div>
+              <!--
+              <button mat-button>Ver comentarios</button>
+              -->
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
       url_video: 'https://www.youtube.com/watch?v=mtBlV9Lb_aM',
       cant_likes: 0,
       cant_dislikes: 0,
-      created_at: '',
+      created_at: '2023-12-06 18:52:15',
       comentarios: [],
     },
     {

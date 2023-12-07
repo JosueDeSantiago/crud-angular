@@ -13,3 +13,35 @@
   display: flex;
   flex-wrap: wrap;
 }
+
+.video {
+  margin: 2rem;
+}
+
+.date-card {
+  color: #aaaaaa;
+  font-size: 10px;
+  font-style: italic;
+}
+
+.container-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-card-action img {
+  height: 50px;
+  object-fit: contain;
+}
+
+@media screen and (max-width: 600px) {
+  .video {
+    margin: 2rem 0.25rem 1rem;
+  }
+  .btn-card-action {
+    font-size: 12px;
+  }
+  .btn-card-action img {
+    height: 25px;
+  }
+}

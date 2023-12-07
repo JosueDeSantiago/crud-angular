@@ -4,7 +4,7 @@
   <div class="row">
     <div class="col col-12">
       <div class="videos_container">
-        <div *ngFor="let video of this.videos" style="margin: 2rem">
+        <div class="video" *ngFor="let video of this.videos">
           <mat-card class="example-card">
             <mat-card-header>
               <!--
@@ -63,16 +63,21 @@
             />
             -->
             <mat-card-content>
-              <p>
-                {{ video.descripcion }}
-              </p>
+              <div class="container-card">
+                <span>
+                  {{ video.descripcion }}
+                </span>
+                <span class="date-card" *ngIf="video.created_at">
+                  {{ video.created_at | date:'dd/MM/yyyy' }}
+                </span>
+              </div>
             </mat-card-content>
             <mat-card-actions>
               <div>
-                <button type="button" class="btn btn-outline-primary" (click)="this.likeAction('LIKE', video)">Me gusta ({{video.cant_likes}} likes)<img src="assets/pulgar-arriba.png" width="50px"></button>
+                <button type="button" class="btn btn-outline-primary btn-card-action" (click)="this.likeAction('LIKE', video)">Me gusta ({{video.cant_likes}} likes)<img src="assets/pulgar-arriba.png"></button>
               </div>
               <div>
-                <button type="button" class="btn btn-outline-danger" (click)="this.likeAction('DISLIKE', video)">No me gusta ({{video.cant_dislikes}} dislikes)<img src="assets/disgusto.png" width="50px"></button>
+                <button type="button" class="btn btn-outline-danger btn-card-action" (click)="this.likeAction('DISLIKE', video)">No me gusta ({{video.cant_dislikes}} dislikes)<img src="assets/disgusto.png"></button>
               </div>
               <!--
               <button mat-button>Ver comentarios</button>

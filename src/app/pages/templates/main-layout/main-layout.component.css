@@ -21,7 +21,6 @@
   /* padding: 0.5rem 1rem; */
   background-color: #555;
   color: white;
-  color: rgba(0, 0, 0, 0.7);
   text-align: center;
   font-size: 16px;
   display: flex;
@@ -47,6 +46,7 @@
 
 .dsc-skeleton-content {
   min-height: calc(100vh - 80px - 60px);
+  background: rgb(0, 0, 0, 0.05);
   background: rgb(177,194,208);
   background: linear-gradient(90deg, rgba(177,194,208,1) 27%, rgba(133,155,209,1) 60%);
 }
@@ -54,6 +54,7 @@ section {
   background-image: linear-gradient(to left,rgba(117, 117, 218, 0.425),rgb(91, 95, 110));
   height: 174vh;
 }
+
 
 
 @media screen and (max-width: 800px) {

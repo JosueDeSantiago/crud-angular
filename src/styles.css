@@ -2,3 +2,21 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mat-mdc-card-header {
+    padding: 10px 16px 8px !important;
+}
+
+mat-card-content {
+    padding: 8px 16px 8px !important;
+}
+
+mat-card-actions {
+    gap: 14px;
+    padding: 8px 12px 12px !important;
+
+}
+
+mat-card-actions button img {
+    width: 40px;
+}
